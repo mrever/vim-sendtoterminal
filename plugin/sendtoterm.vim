@@ -45,7 +45,7 @@ lua << EOF
         vim.cmd('normal! yy')
         local reg = vim.fn.getreg('"')
         send_lines_to_terminal(vim.split(reg, '\n'))
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('i', true, false, true), 'n', false)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('a', true, false, true), 'n', false)
       end)
     end, { noremap = true, silent = true })
 
