@@ -1,10 +1,17 @@
+let g:termnum=0
+for i in range(0, 9)
+  let cmd = printf(':let g:termnum=%d<cr>:echo "terminal %d"<cr>', i, i)
+  execute 'nnoremap <leader>' . i . ' ' . cmd
+  execute 'inoremap <leader>' . i . ' <esc>' . cmd . 'a'
+  execute 'vnoremap <leader>' . i . ' mP' . cmd . '`P'
+endfor
 
 if !has("nvim")
     set nossl
     function! SendLinesToTerm()
       for line in split(getreg('"'), "\n")
         if !empty(line)
-          call term_sendkeys(term_list()[0], line . "\r")
+          call term_sendkeys(term_list()[g:termnum], line . "\r")
         endif
       endfor
     endfunction
@@ -23,7 +30,7 @@ lua << EOF
         return
       end
 
-      local chan_id = vim.b[term_bufs[1]].terminal_job_id
+      local chan_id = vim.b[term_bufs[vim.g.termnum+1]].terminal_job_id
 
       for _, line in ipairs(lines) do
         if line ~= '' then
