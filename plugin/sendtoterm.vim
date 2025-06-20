@@ -1,3 +1,7 @@
+command! VimSendLinesToTerm :call VimSendToTerm()
+
+func! VimSendToTerm()
+
 let g:termnum=0
 for i in range(0, 9)
   let cmd = printf(':let g:termnum=%d<cr>:echo "terminal %d"<cr>', i, i)
@@ -15,9 +19,9 @@ if !has("nvim")
         endif
       endfor
     endfunction
-    nnoremap <silent> <leader>s yy:call SendLinesToTerm()<CR>
-    inoremap <silent> <leader>s <esc>yy:call SendLinesToTerm()<CR>a
-    vnoremap <silent> <leader>s mPyy:call SendLinesToTerm()<CR>`P
+    nnoremap <silent> <leader>t yy:call SendLinesToTerm()<CR>
+    inoremap <silent> <leader>t <esc>yy:call SendLinesToTerm()<CR>a
+    vnoremap <silent> <leader>t mPyy:call SendLinesToTerm()<CR>`P
 else
 lua << EOF
     function send_lines_to_terminal(lines)
@@ -40,13 +44,13 @@ lua << EOF
     end
 
     -- Normal mode: yank current line and send
-    vim.keymap.set('n', '<leader>s', function()
+    vim.keymap.set('n', '<leader>t', function()
       vim.cmd('normal! yy')
       local reg = vim.fn.getreg('"')
       send_lines_to_terminal(vim.split(reg, '\n'))
     end, { noremap = true, silent = true })
 
-    vim.keymap.set('i', '<leader>s', function()
+    vim.keymap.set('i', '<leader>t', function()
       vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
       vim.schedule(function()
         vim.cmd('normal! yy')
@@ -56,7 +60,7 @@ lua << EOF
       end)
     end, { noremap = true, silent = true })
 
-    vim.keymap.set('v', '<leader>s', function()
+    vim.keymap.set('v', '<leader>t', function()
       vim.schedule(function()
         vim.cmd('normal! yy')
         local reg = vim.fn.getreg('"')
@@ -65,3 +69,5 @@ lua << EOF
     end, { noremap = true, silent = true })
 EOF
 endif
+
+endfunc "end VimSendToTerm()
